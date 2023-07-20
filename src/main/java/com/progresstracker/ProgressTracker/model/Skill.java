@@ -11,6 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 @Entity
 public class Skill {
 
@@ -18,13 +21,15 @@ public class Skill {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SKILL_ID_GEN")
 	@SequenceGenerator(name = "SKILL_ID_GEN", sequenceName = "skill_id_seq", allocationSize = 1, initialValue = 1)
 	private long id;
-	
+
 	private String name;
 	private int exp;
 	private LocalDate startDate;
-	@OneToMany(cascade = CascadeType.PERSIST)
+	@LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ExpEntry> expEntries;
-	@OneToMany(cascade = CascadeType.PERSIST)
+	@LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Goal> goals;
 
 	public long getId() {
@@ -73,6 +78,12 @@ public class Skill {
 
 	public void setGoals(List<Goal> goals) {
 		this.goals = goals;
+	}
+
+	@Override
+	public String toString() {
+		return "Skill [id=" + id + ", name=" + name + ", exp=" + exp + ", startDate=" + startDate + ", expEntries="
+				+ expEntries + ", goals=" + goals + "]";
 	}
 
 }

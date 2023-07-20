@@ -17,6 +17,7 @@ public class Goal {
 	private long id;
 	private String goal;
 	private boolean isComplete;
+	private LocalDate deadLine;
 	private LocalDate startDate;
 	private LocalDate endDate;
 	
@@ -50,6 +51,12 @@ public class Goal {
 	}
 	public void setEndDate(LocalDate endDate) {
 		this.endDate = endDate;
+	}
+	public LocalDate getDeadLine() {
+		return deadLine;
+	}
+	public void setDeadLine(LocalDate deadLine) {
+		this.deadLine = deadLine;
 	}
 	
 }

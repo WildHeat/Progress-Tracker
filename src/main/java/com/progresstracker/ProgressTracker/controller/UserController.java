@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.ResponseEntity.BodyBuilder;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,50 +19,57 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.progresstracker.ProgressTracker.model.User;
-import com.progresstracker.ProgressTracker.service.ProgressService;
+import com.progresstracker.ProgressTracker.service.UserService;
 
 @RestController
 @RequestMapping("/api/v1/users")
-public class Controller {
-	
-	private ProgressService progressService;
+public class UserController {
+
+	private UserService userService;
 
 	@Autowired
-	public Controller(ProgressService progressService) {
+	public UserController(UserService userService) {
 		super();
-		this.progressService = progressService;
+		this.userService = userService;
 	}
-	
+
 	@GetMapping
-	public ResponseEntity<List<User>> getAllUsers(){
-		return ResponseEntity.status(HttpStatus.OK).body(progressService.getAllUsers());
+	public ResponseEntity<List<User>> getAllUsers() {
+		return ResponseEntity.status(HttpStatus.OK).body(userService.getAllUsers());
 	}
-	
+
 	@PostMapping
-	public ResponseEntity<User> addEmployee(@RequestBody User user){
-		User tempUser = progressService.addUser(user);
-		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(user.getId()).toUri();
+	public ResponseEntity<User> addUser(@RequestBody User user) {
+		User tempUser = userService.addUser(user);
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(user.getId())
+				.toUri();
 		return ResponseEntity.created(location).build();
 	}
-	
+
 	@PutMapping
 	public ResponseEntity<User> editUser(@RequestBody User user) {
-		User tempUser = progressService.editUser(user);
+		User tempUser = userService.editUser(user);
 //		return ResponseEntity.status(HttpStatus.OK).body(tempEmployee);
-		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(user.getId()).toUri();
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(user.getId())
+				.toUri();
 		return ResponseEntity.created(location).build();
 	}
-	
+
 	@DeleteMapping("/{id}")
 	public ResponseEntity<User> deleteEmployeeById(@PathVariable long id) {
-		progressService.deleteById(id);
+		userService.deleteById(id);
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
-	
+
 	@GetMapping("/{id}")
 	public ResponseEntity<User> getUserById(@PathVariable long id) {
-		return ResponseEntity.status(HttpStatus.OK).body(progressService.getUserById(id));
+		return ResponseEntity.status(HttpStatus.OK).body(userService.getUserById(id));
 	}
-	
+
+	@GetMapping("/user-details")
+	public ResponseEntity<User> getUser(@AuthenticationPrincipal User user) {
+		user.setPassword(null);
+		return ResponseEntity.status(HttpStatus.OK).body(user);
+	}
 
 }
