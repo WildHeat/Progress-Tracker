@@ -1,6 +1,8 @@
 package com.progresstracker.ProgressTracker.service;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,11 @@ import com.progresstracker.ProgressTracker.util.CustomPasswordEncoder;
 
 @Service
 public class UserService {
+	
+    private static final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$";
+    private static final Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
+
+
 
 	@Autowired
 	private UserRepository userRepository;
@@ -31,7 +38,11 @@ public class UserService {
 
 	public User addUser(User user) {
 		System.out.println("Adding user - \n" + user.toString());
-		if (userRepository.existsById(user.getId())) {
+		
+		Optional<User> optionalUser = userRepository.findByUsername(user.getUsername());
+		
+		if (userRepository.existsById(user.getId()) || !pattern.matcher(user.getPassword()).matches() || optionalUser.isPresent()) {
+			System.out.println("Failed to add user");
 			return null;
 		}
 		user.setPassword(customPasswordEncoder.getPasswordEncoder().encode(user.getPassword()));
@@ -41,9 +52,8 @@ public class UserService {
 
 	public User editUser(User user) {
 		Optional<User> optionalUser = userRepository.findById(user.getId());
-		if (optionalUser.isPresent()) {
-			user.setPassword(optionalUser.get().getPassword());
-			
+		if (optionalUser.isPresent() && !pattern.matcher(user.getPassword()).matches()) {
+			user.setPassword(customPasswordEncoder.getPasswordEncoder().encode(user.getPassword()));
 			return userRepository.save(user);
 		}
 		return null;

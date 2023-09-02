@@ -41,6 +41,9 @@ public class UserController {
 	@PostMapping
 	public ResponseEntity<User> addUser(@RequestBody User user) {
 		User tempUser = userService.addUser(user);
+		if (tempUser == null) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		}
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(user.getId())
 				.toUri();
 		return ResponseEntity.created(location).build();
@@ -49,7 +52,10 @@ public class UserController {
 	@PutMapping
 	public ResponseEntity<User> editUser(@RequestBody User user) {
 		User tempUser = userService.editUser(user);
-//		return ResponseEntity.status(HttpStatus.OK).body(tempEmployee);
+		if(tempUser == null) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+
+		}
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(user.getId())
 				.toUri();
 		return ResponseEntity.created(location).build();
