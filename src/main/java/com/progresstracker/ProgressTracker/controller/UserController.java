@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.ResponseEntity.BodyBuilder;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.progresstracker.ProgressTracker.exception.InvalidCredentialsException;
+import com.progresstracker.ProgressTracker.exception.UsernameAlreayExistsException;
 import com.progresstracker.ProgressTracker.model.User;
 import com.progresstracker.ProgressTracker.service.UserService;
 
@@ -39,23 +40,16 @@ public class UserController {
 	}
 
 	@PostMapping
-	public ResponseEntity<User> addUser(@RequestBody User user) {
+	public ResponseEntity<User> addUser(@RequestBody User user) throws UsernameAlreayExistsException, InvalidCredentialsException {
 		User tempUser = userService.addUser(user);
-		if (tempUser == null) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-		}
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(user.getId())
 				.toUri();
 		return ResponseEntity.created(location).build();
 	}
 
 	@PutMapping
-	public ResponseEntity<User> editUser(@RequestBody User user) {
+	public ResponseEntity<User> editUser(@RequestBody User user) throws InvalidCredentialsException {
 		User tempUser = userService.editUser(user);
-		if(tempUser == null) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-
-		}
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(user.getId())
 				.toUri();
 		return ResponseEntity.created(location).build();

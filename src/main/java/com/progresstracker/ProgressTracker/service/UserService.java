@@ -8,6 +8,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.progresstracker.ProgressTracker.exception.InvalidCredentialsException;
+import com.progresstracker.ProgressTracker.exception.UsernameAlreayExistsException;
 import com.progresstracker.ProgressTracker.model.User;
 import com.progresstracker.ProgressTracker.repository.UserRepository;
 import com.progresstracker.ProgressTracker.util.CustomPasswordEncoder;
@@ -36,23 +38,32 @@ public class UserService {
 		return userRepository.findAll();
 	}
 
-	public User addUser(User user) {
+	public User addUser(User user) throws UsernameAlreayExistsException, InvalidCredentialsException {
 		System.out.println("Adding user - \n" + user.toString());
 		
 		Optional<User> optionalUser = userRepository.findByUsername(user.getUsername());
 		
-		if (userRepository.existsById(user.getId()) || !pattern.matcher(user.getPassword()).matches() || optionalUser.isPresent()) {
-			System.out.println("Failed to add user");
-			return null;
+		if(optionalUser.isPresent()) {
+			throw new UsernameAlreayExistsException("Username: " + user.getUsername() + " already exists");
 		}
+		
+		if (!pattern.matcher(user.getPassword()).matches()) {
+			throw new InvalidCredentialsException("Password validation is not met");
+		}
+		
 		user.setPassword(customPasswordEncoder.getPasswordEncoder().encode(user.getPassword()));
 		System.out.println("Saving user - \n" + user.toString());
 		return userRepository.save(user);
 	}
 
-	public User editUser(User user) {
+	public User editUser(User user) throws InvalidCredentialsException {
 		Optional<User> optionalUser = userRepository.findById(user.getId());
-		if (optionalUser.isPresent() && !pattern.matcher(user.getPassword()).matches()) {
+		
+		if (!pattern.matcher(user.getPassword()).matches()) {
+			throw new InvalidCredentialsException("Password validation is not met");
+		}
+		
+		if (optionalUser.isPresent()) {
 			user.setPassword(customPasswordEncoder.getPasswordEncoder().encode(user.getPassword()));
 			return userRepository.save(user);
 		}
