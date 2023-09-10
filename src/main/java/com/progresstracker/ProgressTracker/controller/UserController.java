@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.progresstracker.ProgressTracker.exception.InvalidCredentialsException;
+import com.progresstracker.ProgressTracker.exception.UserNotFoundException;
 import com.progresstracker.ProgressTracker.exception.UsernameAlreayExistsException;
 import com.progresstracker.ProgressTracker.model.User;
 import com.progresstracker.ProgressTracker.service.UserService;
@@ -48,8 +49,9 @@ public class UserController {
 	}
 
 	@PutMapping
-	public ResponseEntity<User> editUser(@RequestBody User user) throws InvalidCredentialsException {
-		User tempUser = userService.editUser(user);
+	public ResponseEntity<User> editUser(@RequestBody User user, @AuthenticationPrincipal User userFromJwt) throws InvalidCredentialsException, UserNotFoundException {
+		User tempUser = userService.editUser(user, userFromJwt);
+		tempUser.setPassword(null);
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(user.getId())
 				.toUri();
 		return ResponseEntity.created(location).build();

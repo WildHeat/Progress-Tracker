@@ -49,7 +49,7 @@ public class SkillController {
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<Skill> getSkillById(@PathVariable long id, @AuthenticationPrincipal User user){
-		return ResponseEntity.status(HttpStatus.OK).body(skillService.getSkillById(id));
+		return ResponseEntity.status(HttpStatus.OK).body(skillService.getSkillById(id, user));
 	}
 	
 	

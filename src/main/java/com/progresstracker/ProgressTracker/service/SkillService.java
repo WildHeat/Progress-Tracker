@@ -8,8 +8,10 @@ import org.springframework.stereotype.Service;
 
 import com.progresstracker.ProgressTracker.model.ExpEntry;
 import com.progresstracker.ProgressTracker.model.Skill;
+import com.progresstracker.ProgressTracker.model.User;
 import com.progresstracker.ProgressTracker.repository.ExpEntryRepository;
 import com.progresstracker.ProgressTracker.repository.SkillRepository;
+import com.progresstracker.ProgressTracker.repository.UserRepository;
 
 @Service
 public class SkillService {
@@ -42,18 +44,21 @@ public class SkillService {
 		Optional<Skill> optionalSkill = skillRepository.findById(id);
 		if (optionalSkill.isPresent()) {
 			System.out.println("Deleting skill-" + id);
-//			for (ExpEntry entry : optionalSkill.get().getExpEntries()) {
-//				expEntryRepository.deleteById(entry.getId());
-//			}
 			skillRepository.deleteById(id);
 		}
 
 	}
 
-	public Skill getSkillById(long id) {
+	public Skill getSkillById(long id, User user) {
 		Optional<Skill> optionalSkill = skillRepository.findById(id);
 		if (optionalSkill.isPresent()) {
-			return optionalSkill.get();
+			Skill skill = optionalSkill.get();
+			for (Skill s : user.getSkills()) {
+				if(s.getId() == skill.getId()) {
+					return skill;
+				}			
+			}
+			
 		}
 		return null;
 	}
