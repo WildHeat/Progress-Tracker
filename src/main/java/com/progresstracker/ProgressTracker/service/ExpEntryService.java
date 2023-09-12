@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.progresstracker.ProgressTracker.model.ExpEntry;
+import com.progresstracker.ProgressTracker.model.Skill;
+import com.progresstracker.ProgressTracker.model.User;
 import com.progresstracker.ProgressTracker.repository.ExpEntryRepository;
 
 @Service
@@ -32,10 +34,17 @@ public class ExpEntryService {
 		return expEntryRepository.save(expEntry);
 	}
 
-	public void deleteById(long id) {
-		if (expEntryRepository.existsById(id)) {
-			System.out.println("Deleting ExpEntry-" + id);
-			expEntryRepository.deleteById(id);
+	public void deleteById(long id, User user) {
+		if (!expEntryRepository.existsById(id)) {
+			return;
+		}
+		
+		for(Skill skill : user.getSkills()) {
+			for(ExpEntry entry : skill.getExpEntries()) {
+				if(entry.getId() == id) {					
+					expEntryRepository.deleteById(id);
+				}
+			}
 		}
 	}
 

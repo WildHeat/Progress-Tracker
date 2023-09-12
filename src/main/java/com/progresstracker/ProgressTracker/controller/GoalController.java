@@ -33,7 +33,7 @@ public class GoalController {
 
 	@PutMapping()
 	public ResponseEntity<Goal> updateGoal(@AuthenticationPrincipal User user, @RequestBody Goal goal) {
-		return ResponseEntity.ok(goalService.updateGoal(goal));
+		return ResponseEntity.ok(goalService.updateGoal(goal, user));
 	}
 	
 	@PostMapping()
@@ -42,8 +42,8 @@ public class GoalController {
 	}
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Goal> deleteGoalById(@PathVariable long id) {
-		goalService.deleteById(id);
+	public ResponseEntity<Goal> deleteGoalById(@PathVariable long id, @AuthenticationPrincipal User user) {
+		goalService.deleteById(id, user);
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 	

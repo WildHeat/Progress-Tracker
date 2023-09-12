@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.progresstracker.ProgressTracker.model.ExpEntry;
 import com.progresstracker.ProgressTracker.model.Goal;
+import com.progresstracker.ProgressTracker.model.Skill;
+import com.progresstracker.ProgressTracker.model.User;
 import com.progresstracker.ProgressTracker.repository.ExpEntryRepository;
 import com.progresstracker.ProgressTracker.repository.GoalRepository;
 
@@ -21,23 +23,39 @@ public class GoalService {
 		return goalRepository.findAll();
 	}
 
-	public Goal updateGoal(Goal goal) {
-		if (goalRepository.existsById(goal.getId())) {
-			return goalRepository.save(goal);
+	public Goal updateGoal(Goal goal, User user) {
+		if (!goalRepository.existsById(goal.getId())) {
+			return null;
 		}
-		return new Goal();
+		for (Skill skill : user.getSkills()) {
+			for (Goal goa : skill.getGoals()) {
+				if(goa.getId() == goal.getId()) {
+					return goalRepository.save(goal);
+				}
+			}
+		}
+		return null;
 	}
 
 	public Goal addGoal(Goal goal) {
 		return goalRepository.save(goal);
 	}
 
-	public void deleteById(long id) {
+	public void deleteById(long id, User user) {
 		Optional<Goal> optionalGoal = goalRepository.findById(id);
-		if (optionalGoal.isPresent()) {
-			System.out.println("Deleting goal-" + id);
-			goalRepository.deleteById(id);
+		if (!optionalGoal.isPresent()) {
+			return;
 		}
+		
+		for (Skill skill : user.getSkills()) {
+			for (Goal goa : skill.getGoals()) {
+				if(goa.getId() == optionalGoal.get().getId()) {					
+					goalRepository.deleteById(id);
+					return;
+				}
+			}
+		}
+		
 
 	}
 

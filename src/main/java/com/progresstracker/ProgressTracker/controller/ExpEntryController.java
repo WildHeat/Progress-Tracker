@@ -42,9 +42,8 @@ public class ExpEntryController {
 	}
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<ExpEntry> deleteExpEntryById(@PathVariable long id) {
-		System.out.println("Deleting Entry - " + id);
-		expEntryService.deleteById(id);
+	public ResponseEntity<ExpEntry> deleteExpEntryById(@AuthenticationPrincipal User user, @PathVariable long id) {
+		expEntryService.deleteById(id, user);
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 	
