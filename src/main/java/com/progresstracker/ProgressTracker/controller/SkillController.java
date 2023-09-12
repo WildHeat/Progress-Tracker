@@ -33,7 +33,7 @@ public class SkillController {
 
 	@PutMapping()
 	public ResponseEntity<Skill> updateSkill(@AuthenticationPrincipal User user, @RequestBody Skill skill) {
-		return ResponseEntity.ok(skillService.updateSkill(skill));
+		return ResponseEntity.ok(skillService.updateSkill(skill, user));
 	}
 	
 	@PostMapping()

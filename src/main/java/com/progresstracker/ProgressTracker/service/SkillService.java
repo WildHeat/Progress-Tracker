@@ -23,17 +23,17 @@ public class SkillService {
 		return skillRepository.findAll();
 	}
 
-	public Skill updateSkill(Skill skill) {
-		if (skillRepository.existsById(skill.getId())) {
-			int newExp = 0;
-			for (ExpEntry entry : skill.getExpEntries()) {
-				newExp += entry.getExp();
-			}
-			skill.setExp(newExp);
-
-			return skillRepository.save(skill);
+	public Skill updateSkill(Skill skill, User user) {
+		if (!skillRepository.existsById(skill.getId())) {
+			return null;
 		}
-		return new Skill();
+		
+		for(Skill ski : user.getSkills()) {
+			if (ski.getId() == skill.getId()) return skillRepository.save(skill);
+		}
+	
+		return null;
+
 	}
 
 	public Skill addSkill(Skill skill) {
@@ -54,11 +54,11 @@ public class SkillService {
 		if (optionalSkill.isPresent()) {
 			Skill skill = optionalSkill.get();
 			for (Skill s : user.getSkills()) {
-				if(s.getId() == skill.getId()) {
+				if (s.getId() == skill.getId()) {
 					return skill;
-				}			
+				}
 			}
-			
+
 		}
 		return null;
 	}

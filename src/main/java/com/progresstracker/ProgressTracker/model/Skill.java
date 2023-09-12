@@ -23,13 +23,12 @@ public class Skill {
 	private long id;
 
 	private String name;
-	private int exp;
 	private LocalDate startDate;
 	@LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ExpEntry> expEntries;
 	@LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Goal> goals;
 
 	public long getId() {
@@ -46,14 +45,6 @@ public class Skill {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public int getExp() {
-		return exp;
-	}
-
-	public void setExp(int exp) {
-		this.exp = exp;
 	}
 
 	public LocalDate getStartDate() {
@@ -82,8 +73,9 @@ public class Skill {
 
 	@Override
 	public String toString() {
-		return "Skill [id=" + id + ", name=" + name + ", exp=" + exp + ", startDate=" + startDate + ", expEntries="
-				+ expEntries + ", goals=" + goals + "]";
+		return "Skill [id=" + id + ", name=" + name + ", startDate=" + startDate + ", expEntries=" + expEntries
+				+ ", goals=" + goals + "]";
 	}
 
+	
 }
