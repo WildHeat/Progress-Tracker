@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
+import javax.validation.constraints.NotBlank;
 
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -22,6 +23,7 @@ public class Skill {
 	@SequenceGenerator(name = "SKILL_ID_GEN", sequenceName = "skill_id_seq", allocationSize = 1, initialValue = 1)
 	private long id;
 
+	@NotBlank(message = "Name is mandatory")
 	private String name;
 	private LocalDate startDate;
 	@LazyCollection(LazyCollectionOption.FALSE)

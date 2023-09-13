@@ -7,6 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 
 @Entity
 public class ExpEntry {
@@ -14,9 +16,11 @@ public class ExpEntry {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "EXPENTRY_ID_GEN")
 	@SequenceGenerator(name = "EXPENTRY_ID_GEN", sequenceName = "expentry_id_seq", allocationSize = 1, initialValue = 1)
 	private long id;
-	private double hours;
+	@Min(0)
+	private double hours;	
+	@Min(1)
+	@Max(5)
 	private int focus;
-	private int exp;
 	private LocalDate timeEntry;
 
 	public long getId() {
@@ -25,14 +29,6 @@ public class ExpEntry {
 
 	public void setId(long id) {
 		this.id = id;
-	}
-
-	public int getExp() {
-		return exp;
-	}
-
-	public void setExp(int exp) {
-		this.exp = exp;
 	}
 
 	public LocalDate getTimeEntry() {
@@ -61,8 +57,7 @@ public class ExpEntry {
 
 	@Override
 	public String toString() {
-		return "ExpEntry [id=" + id + ", hours=" + hours + ", focus=" + focus + ", exp=" + exp + ", timeEntry="
-				+ timeEntry + "]";
+		return "ExpEntry [id=" + id + ", hours=" + hours + ", focus=" + focus + ", timeEntry=" + timeEntry + "]";
 	}
 
 }

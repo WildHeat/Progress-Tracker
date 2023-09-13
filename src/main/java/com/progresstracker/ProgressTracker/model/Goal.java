@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 public class Goal {
@@ -15,6 +16,7 @@ public class Goal {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "GOAL_ID_GEN")
 	@SequenceGenerator(name = "GOAL_ID_GEN", sequenceName = "goal_id_seq", allocationSize = 1, initialValue = 1)
 	private long id;
+	@NotBlank(message = "Goal is mandatory")
 	private String goal;
 	private boolean isComplete;
 	private LocalDate deadLine;

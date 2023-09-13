@@ -23,14 +23,14 @@ public class ExpEntryService {
 
 	public ExpEntry updateExpEntry(ExpEntry expEntry) {
 		if (expEntryRepository.existsById(expEntry.getId())) {		
-			expEntry.setExp((int) (expEntry.getHours() * 50 * (expEntry.getFocus()/2.0)));
+//			expEntry.setExp((int) (expEntry.getHours() * 50 * (expEntry.getFocus()/2.0)));
 			return expEntryRepository.save(expEntry);
 		}
 		return new ExpEntry();
 	}
 	
 	public ExpEntry addExpEntry(ExpEntry expEntry) {
-		expEntry.setExp((int) (expEntry.getHours() * 50 * (expEntry.getFocus()/2.0)));
+//		expEntry.setExp((int) (expEntry.getHours() * 50 * (expEntry.getFocus()/2.0)));
 		return expEntryRepository.save(expEntry);
 	}
 
