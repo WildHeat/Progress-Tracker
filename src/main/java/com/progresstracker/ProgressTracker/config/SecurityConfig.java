@@ -40,13 +40,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http
-        .csrf().disable()
-        .cors().and() // Configure CORS here
-        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-        .exceptionHandling().authenticationEntryPoint((request, response, ex) -> {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage());
-        }).and();
+		http = http.csrf().disable().cors().disable();
+
+		http = http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and();
+		http = http.exceptionHandling().authenticationEntryPoint((request, response, ex) -> {
+			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage());
+		}).and();
 
 		http.authorizeRequests()
 		.antMatchers("/api/v1/login").permitAll()
