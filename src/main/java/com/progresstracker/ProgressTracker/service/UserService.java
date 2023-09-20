@@ -19,7 +19,7 @@ import com.progresstracker.ProgressTracker.util.CustomPasswordEncoder;
 public class UserService {
 
 	private static final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,20}$";
-	private static final Pattern pattern = Pattern.compile(PASSWORD_PATTERN);
+	private static final Pattern passwordPattern = Pattern.compile(PASSWORD_PATTERN);
 
 	@Autowired
 	private UserRepository userRepository;
@@ -40,13 +40,21 @@ public class UserService {
 	public User addUser(User user) throws UsernameAlreayExistsException, InvalidCredentialsException {
 		System.out.println("Adding user - \n" + user.toString());
 
-		Optional<User> optionalUser = userRepository.findByUsername(user.getUsername());
+		Optional<User> optionalUser = userRepository.findByUsernameIgnoreCase(user.getUsername());
 
 		if (optionalUser.isPresent()) {
 			throw new UsernameAlreayExistsException("Username: " + user.getUsername() + " already exists");
 		}
+		
+		if (user.getUsername().contains(" ")) {
+			throw new InvalidCredentialsException("Username validation is not met");			
+		}
+		
+		if (user.getUsername().equals("")) {
+			throw new InvalidCredentialsException("Username can not be empty");			
+		}
 
-		if (!pattern.matcher(user.getPassword()).matches()) {
+		if (!passwordPattern.matcher(user.getPassword()).matches()) {
 			throw new InvalidCredentialsException("Password validation is not met");
 		}
 

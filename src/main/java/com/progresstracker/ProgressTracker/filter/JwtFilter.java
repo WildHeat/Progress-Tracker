@@ -43,7 +43,7 @@ public class JwtFilter extends OncePerRequestFilter{
         final String token = header.split(" ")[1].trim();
 
         UserDetails userDetails = progressRepositoy
-        		.findByUsername(jwtUtil.getUsernameFromToken(token))
+        		.findByUsernameIgnoreCase(jwtUtil.getUsernameFromToken(token))
         		.orElse(null);
 
         // Get jwt token and validate

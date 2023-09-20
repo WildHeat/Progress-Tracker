@@ -22,7 +22,7 @@ public class UserDetailServiceImpl implements UserDetailsService{
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		
-		Optional<User> userOpt = progressRepository.findByUsername(username);
+		Optional<User> userOpt = progressRepository.findByUsernameIgnoreCase(username);
 		return userOpt.orElseThrow(() -> new UsernameNotFoundException("Invalid credentials"));
 	}
 
