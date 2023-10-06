@@ -1,5 +1,5 @@
 # Progress-Tracker
-This is the Java Srping Boot backend of the progress-tracker application.
+This is the Java Spring Boot backend of the progress-tracker application.
 
 Feel free to visit the site which was deployed on AWS ;) 
 
